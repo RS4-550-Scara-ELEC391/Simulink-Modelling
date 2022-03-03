@@ -17,28 +17,30 @@ RCG list
 
 ## Descriptions
 ### Controller Design
-  RCG
-  System models
-  Sensor filter
-  Derivative filter
-  10-step process
-  Heuristic Tuning
+- RCG
+- System models 
+- Sensor filter
+- Derivative filter
+- 10-step process
+- Heuristic Tuning
   
 ### Actuator Design
-  RCG
-  Motor
-  Gear ratio
-  Sensor
-  
+- RCG
+- Motor
+- Gear ratio
+- Sensor
   
 ### C-Code
-  Homing logic
-  Sensor logic
-  Kinematics
-  Path planning
-  Self-documentation
-  Testing
+- Homing logic
+- Sensor logic
+- Kinematics
+- Path planning
+- Self-documentation
+- Testing
 
 
 ## Questions for TAs
+-
+-
+-
 
