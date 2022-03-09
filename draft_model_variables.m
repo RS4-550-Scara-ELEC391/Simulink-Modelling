@@ -3,6 +3,9 @@
 %------------------------------------------------
 
 % Maxon motor: EC-i 30 30mm (shaft diameter = 4mm)
+clear
+clc
+open_system('draft_arm_model.slx')
 
 % variables from data sheet:
 V_nom = 24;         % [V]
@@ -19,7 +22,7 @@ J = Jrot + Jload;   % [gm^2]
 J = J/1000;         % [Kgm^2]
 
 % gear ratio
-gear_i = 1;
+gear_i = 2;
 
 % P-Controller:
 Kp = 1;
