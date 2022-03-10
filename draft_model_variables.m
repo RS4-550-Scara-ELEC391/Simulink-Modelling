@@ -28,6 +28,6 @@ Kd = 2;
 
 % Path input
 
-time = 0:0.0001:8;
-X = 100*cos(time) + 200;
-Y = 100*sin(time) + 200;
+time = 0:0.001:8;
+X = 549*cos(time/2);
+Y = 549*sin(time/2);
