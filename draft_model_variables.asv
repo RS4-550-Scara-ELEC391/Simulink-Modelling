@@ -22,12 +22,12 @@ J = Jrot + Jload;   % [gm^2]
 J = J/1000;         % [Kgm^2]
 
 % gear ratio
-gear_i = 50;
+gear_i = 15;
 
 % P-Controller:
-Kp = 2;
+Kp = 1;
 Ki = 0;
 Kd = 1;
 
 % Name the Output Files:
-set_param('draft_arm_model/MechOut','filename', sprintf('out/mechData-Kp%dKi%dKd%i-Gear%i', Kp, Ki, Kd, gear_i))
+set_param('draft_arm_model/MechOut','filename', sprintf('mechData-Kp%dKi%dKd%i-Gear%i', Kp, Ki, Kd, i))
