@@ -22,9 +22,9 @@ J = Jrot + Jload;   % [gm^2]
 J = J/1000;         % [Kgm^2]
 
 % gear ratio
-gear_i = 2;
+gear_i = 1/100;
 
 % P-Controller:
-Kp = 1;
+Kp = 2;
 Ki = 0;
-Kd = 2;
+Kd = 1;
