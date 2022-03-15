@@ -12,7 +12,7 @@ close all
 
 
 % known initial pose:
-Oi = [471.5; 149.1; 433.1];
+Oi = [550; 0; 0];
 
 % basis vectors:
 i = [1;0;0];

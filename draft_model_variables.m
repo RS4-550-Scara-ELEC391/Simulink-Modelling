@@ -1,6 +1,6 @@
-%------------------------------------------------
+% ------------------------------------------------
 %   draft arm model variables
-%------------------------------------------------
+% ------------------------------------------------
 
 % Maxon motor: EC-i 30 30mm (shaft diameter = 4mm)
 
@@ -21,10 +21,19 @@ J = J/1000;         % [Kgm^2]
 % gear ratio
 gear_i = 1;
 
-% P-Controller:
-Kp = 1;
-Ki = 0;
-Kd = 2;
+% Amplifier transfer function
+AmpNum = [3e06];
+AmpDen = [1 655.7 7.704e5];
+
+% Joint 1 PID
+Kp1 = 1;
+Ki1 = 0;
+Kd1 = 2;
+
+% Joint 2 PID
+Kp2 = 1;
+Ki2 = 0;
+Kd2 = 2;
 
 % Path input
 
