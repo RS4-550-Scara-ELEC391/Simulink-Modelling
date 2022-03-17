@@ -38,5 +38,6 @@ Kd2 = 2;
 % Path input
 
 time = 0:0.001:8;
+path = trajectories(100, 8, 0.001)
 X = 549*cos(time/2);
 Y = 549*sin(time/2);

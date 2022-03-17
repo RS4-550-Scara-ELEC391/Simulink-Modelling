@@ -22,7 +22,8 @@ gear_i = 1;
 % Jload = 23.44*0.0001; % calculated from solidworks model
 % J = Jrot + Jload;   % [gm^2]
 % J = J/1000;         % [Kgm^2]
-J1 = (Jrot + mass*length^2)/1000 + 1.29;
+%J1 = (Jrot + mass*length^2)/1000 + 1.29;
+J1 = 2.60;            % from solidworks with 1kg load
 J2 = Jrot/1000 + 0.09;
 
 % Amplifier transfer function
@@ -38,6 +39,9 @@ Kd1 = 3;
 Kp2 = 1;
 Ki2 = 0;
 Kd2 = 2;
+
+% sampling frequency
+CF = 10000;
 
 % Path input
 time = 0:0.001:8;
