@@ -27,8 +27,10 @@ J1 = 2.60;            % from solidworks with 1kg load
 J2 = Jrot/1000 + 0.09;
 
 % Amplifier transfer function
-AmpNum = [3e06];
-AmpDen = [1 655.7 7.704e5];
+AmpNum = [2.149e7];
+AmpDen = [1 655.7 5.52e6];
+
+s = tf('s');
 
 % --- Joint 1 PID ---
 Kp1 = 2;
@@ -41,12 +43,39 @@ Ki2 = 0;
 Kd2 = 2;
 
 % sampling frequency
-CF = 10000;
+CF = 1000;              % to be found from arduino code
+N = 2*CF;
 
 % Path input
 time = 0:0.001:8;
 X = 200*cos(time)+340;
 Y = 200*sin(time);
+
+
+
+
+%% Transfer function
+
+PID1 = tf(Kp1 + Ki1/s + Kd1*N*s/(s+N));
+Amplifier = tf(AmpNum, AmpDen);
+
+% motor and mech gain
+Gm1 = km*gear_i* tf(1,[L R])*tf(1,[J1 B]);
+Hm1 = gear_i*ka;
+Motormech1 = Gm1 / (1+Gm1*Hm1);
+
+% forward path gain G1
+G1 = Amplifier*Motormech1*tf(1/s);
+
+% feedback path gain H1
+H1 = tf(N/(s+N));
+
+% closed loop transfer function, joint 1
+cltf1 = G1/(1+G1*H1)
+
+
+
+
 
 
 

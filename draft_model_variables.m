@@ -22,8 +22,8 @@ J = J/1000;         % [Kgm^2]
 gear_i = 1;
 
 % Amplifier transfer function
-AmpNum = [3e06];
-AmpDen = [1 655.7 7.704e5];
+AmpNum = [2.149e7];
+AmpDen = [1 655.7 5.52e6];
 
 % Joint 1 PID
 Kp1 = 1;
