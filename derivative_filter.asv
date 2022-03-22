@@ -1,5 +1,5 @@
 % Derivative filter experiments
-
+close all
 t = 0:0.001:8;          % time
 u = sin(t);             % input signal
 u_noisy = awgn(u, 80);  % add AWGN noise (SNR = signal to noise ratio = 80)
@@ -37,7 +37,7 @@ deriv_wo_filter = gradient(u_noisy)/dt;
 
 %% Plotting
 
-figure(5)
+figure
 tiledlayout(1,2)
 nexttile
 plot(t, deriv_wo_filter, t,u_noisy)

@@ -140,19 +140,19 @@ Kp2 = 2/z - 1/p;
 Ki2 = 1;
 Kd2 = 1/z^2 - Kp1/p;
 
-% % New transfer function with PID (Iterate)
+% New transfer function with PID (Iterate)
 % for n=1:10
 % PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
 % [Gm,Pm,Wcg,Wcp] = margin(PID2*G2*H2);
-% z = Wcg / 10   % Initial zero 1 decade before PXO
+% z = Wcg / 10;   % Initial zero 1 decade before PXO
 % p = 2*CF;
 % Kp2 = 2/z - 1/p;
 % Ki2 = 1;
 % Kd2 = 1/z^2 - Kp1/p;
 % end
 
-    % -> lowest solution z = 10.3828
-z = 10.3828;
+    % -> lowest solution z = 0.1
+z = 0.1;
 Kp2 = 2/z - 1/p;
 Ki2 = 1;
 Kd2 = 1/z^2 - Kp1/p;
@@ -160,10 +160,8 @@ Kd2 = 1/z^2 - Kp1/p;
 K2 = 1/abs(freqresp(PID2*G2*H2,z));
 PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
 
-figure(2)
-clf
-rlocus(PID2*G2*H2)
-K2 = 1.25;
+% rlocus(PID2*G2*H2)
+K2 = 0.0753;
 
 [Gm,Pm,Wcg,Wcp] = margin(K2*PID2*G2*H2);
 % bodeplot(K2*PID2*G2/(1+K2*PID2*G2*H2))
