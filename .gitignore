@@ -1,22 +1,3 @@
 
-slprj/_jitprj/jitEngineAccessInfo.mat
-slprj/_jitprj/sekM6JrI8qNNgeecRUH3SQG.l
-slprj/_jitprj/sekM6JrI8qNNgeecRUH3SQG.mat
-slprj/_jitprj/sVGfunPIcqS3VLhvpXMnkM.l
-slprj/_jitprj/sVGfunPIcqS3VLhvpXMnkM.mat
-slprj/_sfprj/draft_arm_model/_self/sfun/info/binfo.mat
-slprj/_sfprj/draft_arm_model/amsi_serial.mat
-slprj/_sfprj/EMLReport/emlReportAccessInfo.mat
-slprj/_sfprj/EMLReport/sekM6JrI8qNNgeecRUH3SQG.mat
-slprj/_sfprj/EMLReport/sVGfunPIcqS3VLhvpXMnkM.mat
-slprj/_sfprj/precompile/autoInferAccessInfo.mat
-slprj/_sfprj/precompile/EE6sMw3UuDMEL1UhP5aUgH.mat
-slprj/_sfprj/precompile/fSJD7cVJEs2v7Wx6hv2MaG.mat
-slprj/_sfprj/precompile/rcqP9RYPJdMw2N5ypSxwJ.mat
-slprj/_sfprj/precompile/XzFCIja7PWVGhOm8iTCdQB.mat
-slprj/sim/varcache/draft_arm_model/checksumOfCache.mat
-slprj/sim/varcache/draft_arm_model/tmwinternal/simulink_cache.xml
-slprj/sim/varcache/draft_arm_model/varInfo.mat
-slprj/_sfprj/EMLReport/ZiQCYweTjWfvJ8fjJvWNwD.mat
-slprj/sim/varcache/linear_arm_model/checksumOfCache.mat
-slprj/sim/varcache/linear_arm_model/varInfo.mat
+slprj/*
+out/*
