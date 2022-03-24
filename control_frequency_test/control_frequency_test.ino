@@ -1,15 +1,10 @@
-#include <TimerInterrupt.h>
-#include <TimerInterrupt.hpp>
-#include <ISR_Timer.h>
-#include <ISR_Timer.hpp>
-
 // declare io pins
 int parallel = 4;    
-int clk = 5;
-int serialData1 = 6;    // encoder 1 data 
-int serialData2 = 7;    // encoder 2 data 
-int PWM1 = 2;           // PWM output to joint 1
-int PWM2 = 3;           // PWM output to joint 2
+int clk = 13;
+int serialData1 = 7;    // encoder 1 data 
+int serialData2 = 8;    // encoder 2 data 
+int PWM1 = 3;           // PWM output to joint 1
+int PWM2 = 5;           // PWM output to joint 2
 
 // PID constants
 const double K1 = 1;
@@ -41,7 +36,8 @@ const double ref2 = 3.14/2;
   int duty1 = 127;
   int duty2 = 127;
 
-  
+  int i = 1; //loop index
+
 
 void setup() {
   // baud rate
@@ -55,8 +51,6 @@ void setup() {
   pinMode(PWM1, OUTPUT);
   pinMode(PWM2, OUTPUT);
 
-    int i = 0; //loop index
-
 
 }
 
@@ -64,11 +58,13 @@ void setup() {
 void loop() {
 
   // print iteration
-  Serial.print("Start of loop");
+  Serial.print("Start of loop ");
   Serial.print(i);
+  
   // print current time
-  Serial.print("Current time is:");
+  Serial.print(". Current time is:");
   Serial.print(millis());
+  Serial.print("\n");
   i = i+1;
  
   // ISR code:
@@ -96,7 +92,7 @@ void loop() {
     // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
     PID1 = constrain(PID1, -5, 5);
     duty1 = 25.5*PID1 + 127.5;
-    analogWrite(PWM, duty1);
+    analogWrite(PWM1, duty1);
 
     // ------------ Motor 2 ------------
 
@@ -122,7 +118,11 @@ void loop() {
     // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
     PID2 = constrain(PID2, -5, 5);
     duty2 = 25.5*PID2 + 127.5;
-    analogWrite(PWM, duty2);
+    analogWrite(PWM2, duty2);
+
+    if(i >= 100){
+      while(1); //finish 100 iterations
+    }
 
 } //end loop
 
@@ -132,10 +132,10 @@ int readEncoder(int serialData){
 
   int8_t value = 0;
   int8_t tempbit = 0;
-  digitalWrite(parallel, 0);  // enable parallel inputs
+  digitalWrite(parallel, 0);  // enable parallel to serial mode
   digitalWrite(clk, 0);       // clk low
   digitalWrite(clk, 1);       // clk high, load data
-  digitalWrite(parallel, 1);  // disable parallel inputs 
+  digitalWrite(parallel, 1);  // disable parallel to serial mode
 
   // read in 8 bits:
   for(int i = 0; i < 8; i++){
@@ -146,7 +146,7 @@ int readEncoder(int serialData){
   }
 
   // cast int8_t to int:
-  int encoder_value = (int8_t) value; // signed -> negative if backwards from home, positive if forwards from home
+  int encoder_value = (int) value; // signed -> negative if backwards from home, positive if forwards from home
   
   return encoder_value;
   
