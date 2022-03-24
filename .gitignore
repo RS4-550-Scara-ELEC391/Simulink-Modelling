@@ -1,5 +1,5 @@
 *.slxc
 slprj/*
+out/*
 *.autosave
 draft_arm_model.slx.autosave
-out/*

@@ -43,7 +43,7 @@ elseif (J1 == 3)
     ka = km;
     motor_name = 'RE-40'
     part_number = '148866';
-    gear_i = 100;
+    gear_i = 120;
     %https://www.max 
     % ongroup.com/maxon/view/category/gear?etcc_cu=onsite&etcc_med_onsite=Product&etcc_cmp_onsite=Planetary+Gearheads+(GP)&etcc_plc=Overview-Page-Gears&etcc_var=%5bcom%5d%23en%23_d_&target=filter&filterCategory=planetary
 end
@@ -61,7 +61,7 @@ if (J2 == 1)
     km2 = 22.8*1e-3;     % [Nm/A]
     ka2 = km;
     motor_name2 = 'EC-Motor'
-    gear_i2 = 1;
+    gear_i2 = 5;
 elseif (J2 == 2)
     % Maxon motor: RE-35
     % variables from data sheet:
@@ -83,7 +83,8 @@ elseif (J2 == 3)
     ka2 = km;
     motor_name2 = 'RE-30'
     part_number2 = '268193';
-    gear_i2 = 25;
+    gear_i2 = 123;
+    gear_number2 = '166170';
 end
 
 % Mechanical Variables from Datasheet
@@ -94,19 +95,31 @@ Jload = 23.44*0.0001; % calculated from solidworks model
 J = Jrot + Jload;   % [gm^2]
 J = J/1000;         % [Kgm^2]
 
-K1 = 39.8;
 
+
+% Nicole Tuning:
+%{
 % P-Controller:
+K1 = 39.8;
 Kp = K1 * 0.2548;
 Ki = K1 * 1;
 Kd = K1 * 0.0162;
 
 % P-Controller:
 K2 = 1.25;
-
 Kp2 = K2 * 0.1921;
 Ki2 = K2 * 1;
 Kd2 = K2 * 0.0091;
+%}
+
+% No Tuning Test Parameter:
+Kp = 10;
+Ki = 0;
+Kd = 0;
+
+Kp2 = 10;
+Ki2 = 0;
+Kd2 = 0;
 
 
 time = 0:0.001:1.999;
@@ -119,12 +132,12 @@ amplifier_num = [2.149e7];
 amplifier_denom = [1 655.7 5.52e6];
 
 
-foldername='nicoleTuning/';
+foldername='VibrationAnalysis/';
 % Parameter Plot: Name the Output Files:
 %mkdir(strcat('out/',motor_name))
 mkdir(strcat('out/', foldername))
 %name = sprintf(strcat('out/', motor_name,'/Kp=%03d-Ki=%03d-Kd=%03d-Gear=%03d_data'), Kp, Ki, Kd, gear_i);
-name = sprintf(strcat('out/', foldername, motor_name, '-', motor_name2, '-', 'Gear1=%03d-Gear2=%03d-', 'loaded-%d', '_data'), gear_i,gear_i2, loaded);
+name = sprintf(strcat('out/', foldername, motor_name, '-', motor_name2, '-', 'Gear1=%03d-Gear2=%03d-', 'notuning-', 'loaded-%d-badrho', '_data'), gear_i,gear_i2, loaded);
 
 
 % Set Simulink Model simOut Blocks to write to specific file name:
