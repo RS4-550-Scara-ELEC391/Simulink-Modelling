@@ -157,8 +157,8 @@ Kp2 = 2/z - 1/p;
 Ki2 = 1;
 Kd2 = 1/z^2 - Kp1/p;
 
-K2 = 1/abs(freqresp(PID2*G2*H2,z));
 PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
+K2 = 1/abs(freqresp(PID2*G2*H2,z));
 
 figure(2)
 clf
