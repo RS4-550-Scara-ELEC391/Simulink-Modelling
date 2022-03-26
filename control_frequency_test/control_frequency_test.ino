@@ -57,15 +57,8 @@ void setup() {
 
 void loop() {
 
-  // print iteration
-  Serial.print("Start of loop ");
-  Serial.print(i);
   
-  // print current time
-  Serial.print(". Current time is:");
-  Serial.print(millis());
-  Serial.print("\n");
-  i = i+1;
+  
  
   // ISR code:
     // ------------ Motor 1 ------------
@@ -121,9 +114,19 @@ void loop() {
     analogWrite(PWM2, duty2);
 
     if(i >= 100){
+      // print iteration
+  Serial.print("end of loop ");
+  Serial.print(i);
+  
+  // print current time
+  Serial.print(". Current time is:");
+  Serial.print(millis());
+  Serial.print("\n");
       while(1); //finish 100 iterations
     }
-
+  
+  i = i+1; //increment loop index
+  
 } //end loop
 
 

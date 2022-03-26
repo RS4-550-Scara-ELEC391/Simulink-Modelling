@@ -2,20 +2,27 @@
 %   Linear model variables
 %------------------------------------------------
 
-% Maxon motor: 148866
+% Maxon motor joint 1: 148866
 
-% variables from data sheet:
+% variables from data sheet 
+% Motor 1 (148866):
 V_nom = 12;         % [V]
-R = 0.115;           % [Ohm]
-L = 0.245e-3;     % [H]
-km = 16.4e-3;     % [Nm/A]
-ka = km;
+R1 = 0.115;           % [Ohm]
+L1 = 0.245e-3;     % [H]
+km1 = 16.4e-3;     % [Nm/A]
+ka1 = km1;
 B = 7e-4;
-mass = 2450*0.001;        % [kg]
+
+% Motor 2 (268193):
+R2 = 0.2;           % [Ohm]
+L2 = 0.0345e-3;     % [H]
+km2 = 13.9e-3;     % [Nm/A]
+ka2 = km2;
 
 % robot
 length = 0.275;
-gear_i = 100;
+gear1 = 120;
+gear2 = 200;    % --> double check
 
 % Calculated values:
 J1 = 2.60;            % from solidworks with 1kg load
@@ -27,18 +34,20 @@ AmpDen = [1 655.7 5.52e6];
 
 s = tf('s');
 
-% --- Joint 1 PID ---
-Kp1 = 2;
-Ki1 = 0;
-Kd1 = 3;
+% Joint 1 PID
+K1 = 0.589;
+Kp1 = 20.9419;
+Ki1 = 1;
+Kd1 = 109.6356;
 
-% --- Joint 2 PID ---
-Kp2 = 1;
-Ki2 = 0;
-Kd2 = 2;
+% Joint 2 PID
+K2 = 0.0753;
+Kp2 = 19.9995;
+Ki2 = 1;
+Kd2 = 99.9905;
 
 % sampling frequency
-CF = 1000;              % to be found from arduino code
+CF = 1163;  % [Hz]
 N = 100;
 
 % Path input
@@ -54,8 +63,8 @@ Y = 200*sin(time);
 Amplifier = tf(AmpNum, AmpDen);
 
 % motor and mech gain
-Gm1 = km*gear_i* tf(1,[L R])*tf(1,[J1 B]);
-Hm1 = gear_i*ka;
+Gm1 = km1*gear1* tf(1,[L1 R1])*tf(1,[J1 B]);
+Hm1 = gear1*ka1;
 Motormech1 = Gm1 / (1+Gm1*Hm1);
 
 % forward path gain G1
@@ -119,8 +128,8 @@ K1 = 39.8;
 %% Transfer function (Ten step proccess) Joint 2
 
 % motor and mech gain
-Gm2 = km*gear_i* tf(1,[L R])*tf(1,[J2 B]);
-Hm2 = gear_i*ka;
+Gm2 = km2*gear2* tf(1,[L2 R2])*tf(1,[J2 B]);
+Hm2 = gear2*ka2;
 Motormech2 = Gm2 / (1+Gm2*Hm2);
 
 % forward path gain G1
@@ -158,12 +167,12 @@ Ki2 = 1;
 Kd2 = 1/z^2 - Kp1/p;
 
 PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
-K2 = 1/abs(freqresp(PID2*G2*H2,z));
+% K2 = 1/abs(freqresp(PID2*G2*H2,z));
 
 figure(2)
 clf
 rlocus(PID2*G2*H2)
-K2 = 1.25;
+K2 = 0.151;
 
 [Gm,Pm,Wcg,Wcp] = margin(K2*PID2*G2*H2);
 % bodeplot(K2*PID2*G2/(1+K2*PID2*G2*H2))

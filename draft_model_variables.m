@@ -5,7 +5,7 @@
 % Maxon motor: EC-i 30 30mm (shaft diameter = 4mm)
 
 % variables from data sheet:
-V_nom = 24;         % [V]
+V_nom = 12;         % [V]
 R = 0.713;           % [Ohm]
 L = 0.475*1e-3;     % [H]
 km = 22.8*1e-3;     % [Nm/A]
@@ -21,7 +21,7 @@ AmpNum = [2.149e7];
 AmpDen = [1 655.7 5.52e6];
 s = tf('s');
 
-CF = 1000;
+CF = 1163;
 N = 100;
 
 % Joint 1 PID

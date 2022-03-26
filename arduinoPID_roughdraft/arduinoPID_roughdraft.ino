@@ -1,33 +1,36 @@
-#include <TimerInterrupt.h>
-#include <TimerInterrupt.hpp>
-#include <ISR_Timer.h>
-#include <ISR_Timer.hpp>
+//#include <TimerInterrupt.h>
+//#include <TimerInterrupt.hpp>
+//#include <ISR_Timer.h>
+//#include <ISR_Timer.hpp>
 
 // declare io pins
-int parallel = 4;    
-int clk = 5;
+int parallel = 4;       // enable parallel inputs on shift reg
+int clk = 5;            // clk output to shift reg
 int serialData1 = 6;    // encoder 1 data 
 int serialData2 = 7;    // encoder 2 data 
 int PWM1 = 2;           // PWM output to joint 1
 int PWM2 = 3;           // PWM output to joint 2
 
-// PID constants
+// PID constants (Joint 1)
 const double K1 = 1;
 const double Kp1 = K1*1;
 const double Ki1 = K1*1;
 const double Kd1 = K1*1;
 
+// PID constants (Joint 1)
 const double K2 = 1;
 const double Kp2 = K2*1;
 const double Ki2 = K2*1;
 const double Kd2 = K2*1;
 
-const int Ts = 1; // ISR run time [ms]
-const int N = 100;
-const int CF = 1000; // ISR frequency [Hz]
-const double a = N*Ts / (1+N*Ts);
+// timing constants
+const int CF = 1163;          // ISR frequency [Hz]
+const double Ts = 1/CF;       // ISR run time [s]
+const int N = 100;            // filter constant
+const double a = N*Ts/(1+N*Ts);   // used for derivative eqn
 
-const double ref1 = -3.14/4;
+// step references
+const double ref1 = -3.14/4;  
 const double ref2 = 3.14/2;
 
 
@@ -41,7 +44,6 @@ const double ref2 = 3.14/2;
   int duty1 = 127;
   int duty2 = 127;
 
-  
 
 void setup() {
   // baud rate
@@ -61,8 +63,7 @@ void setup() {
   TCCR1A = 0;
   TCCR1B = 0;
   TCNT1  = 0;
-  OCR1A = 16000;            // CPU freq/prescaler/desired freq = 16MHz/1000Hz
-
+  OCR1A = 13757;            // CPU freq/prescaler/desired freq = 16MHz/1163Hz
   TCCR1B |= (1 << WGM12);   // CTC mode (clear timer on compare)
   TCCR1B |= (1 << CS10);    // no prescaler 
   TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt
@@ -81,6 +82,7 @@ void loop() {
 ISR(TIMER1_COMPA_vect){  
 
  // ------------ Motor 1 ------------
+
 
   // get position from encoder
   int pose1 = readEncoder(serialData1);
@@ -104,7 +106,7 @@ ISR(TIMER1_COMPA_vect){
   // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
   PID1 = constrain(PID1, -5, 5);
   duty1 = 25.5*PID1 + 127.5;
-  analogWrite(PWM, duty1);
+  analogWrite(PWM1, duty1);
 
  // ------------ Motor 2 ------------
 
@@ -130,7 +132,8 @@ ISR(TIMER1_COMPA_vect){
   // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
   PID2 = constrain(PID2, -5, 5);
   duty2 = 25.5*PID2 + 127.5;
-  analogWrite(PWM, duty2);
+  analogWrite(PWM2, duty2);
+
   
 }// end ISR
 
