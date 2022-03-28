@@ -4,12 +4,14 @@
 //#include <ISR_Timer.hpp>
 
 // declare io pins
-int parallel = 4;       // enable parallel inputs on shift reg
-int clk = 5;            // clk output to shift reg
+int clk1 = 4;           // clk output to shift reg1
+int clk2 = 5;           // clk output to shift reg2
 int serialData1 = 6;    // encoder 1 data 
 int serialData2 = 7;    // encoder 2 data 
 int PWM1 = 2;           // PWM output to joint 1
 int PWM2 = 3;           // PWM output to joint 2
+int reset1 = 8;         // homing pulse 1
+int reset2 = 9;        // homing pulse 2
 
 // PID constants (Joint 1)
 const double K1 = 1;
@@ -50,12 +52,25 @@ void setup() {
   Serial.begin(9600);
 
   // setup io pins
-  pinMode(parallel, OUTPUT);
-  pinMode(clk, OUTPUT);
+  pinMode(clk1, OUTPUT);
+  pinMode(clk2, OUTPUT);
   pinMode(serialData1, INPUT);
   pinMode(serialData2, INPUT);
   pinMode(PWM1, OUTPUT);
   pinMode(PWM2, OUTPUT);
+  pinMode(reset1, INPUT);
+  pinMode(reset2, INPUT);
+
+  // Homing Routine:
+    // rotate joint 1 back slowly until homing pulse is triggered
+    while(digitalRead(reset1) == 0) {
+    analogWrite(PWM1, 102);   ////40% duty (-1V)
+    }
+    //rotate joint 2 back slowly until homing pulse is triggered
+    while(digitalRead(reset2) == 0) {
+    analogWrite(PWM2, 102);   ////40% duty (-1V)
+    }
+  
 
   // --- initialize timer1 ---
   noInterrupts();           // disable all interrupts
@@ -69,7 +84,6 @@ void setup() {
   TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt
 
   interrupts();             // enable all interrupts
-
 
 }
 
@@ -85,7 +99,7 @@ ISR(TIMER1_COMPA_vect){
 
 
   // get position from encoder
-  int pose1 = readEncoder(serialData1);
+  int pose1 = readEncoder(serialData1, clk1);
 
   // calculate error
   int error1 = ref1 - pose1;
@@ -111,7 +125,7 @@ ISR(TIMER1_COMPA_vect){
  // ------------ Motor 2 ------------
 
   // get position from encoder
-  int pose2 = readEncoder(serialData2);
+  int pose2 = readEncoder(serialData2, clk2);
 
   // calculate error
   int error2 = ref2 - pose2;
@@ -130,7 +144,7 @@ ISR(TIMER1_COMPA_vect){
 
 
   // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
-  PID2 = constrain(PID2, -5, 5);
+  PID2 = constrain(PID2, -5, 5);    
   duty2 = 25.5*PID2 + 127.5;
   analogWrite(PWM2, duty2);
 
@@ -140,14 +154,12 @@ ISR(TIMER1_COMPA_vect){
 
 
 // ------- Read Encoder function -------
-int readEncoder(int serialData){
+int readEncoder(int serialData, int clk){
 
   int8_t value = 0;
   int8_t tempbit = 0;
-  digitalWrite(parallel, 0);  // enable parallel inputs
   digitalWrite(clk, 0);       // clk low
   digitalWrite(clk, 1);       // clk high, load data
-  digitalWrite(parallel, 1);  // disable parallel inputs 
 
   // read in 8 bits:
   for(int i = 0; i < 8; i++){
