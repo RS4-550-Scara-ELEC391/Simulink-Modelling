@@ -31,9 +31,10 @@ const double Ts = 1/CF;       // ISR run time [s]
 const int N = 100;            // filter constant
 const double a = N*Ts/(1+N*Ts);   // used for derivative eqn
 
-// step references
+// position references
 const double ref1 = -3.14/4;  
 const double ref2 = 3.14/2;
+const double encoderRes = 6.283/1024;
 
 
   // initialize global variables
@@ -102,7 +103,7 @@ ISR(TIMER1_COMPA_vect){
   int pose1 = readEncoder(serialData1, clk1);
 
   // calculate error
-  int error1 = ref1 - pose1;
+  double error1 = ref1 - encoderRes*pose1;
 
   // calculate integral
   I1 = Ki1 * error1 * Ts * + I1;
@@ -128,7 +129,7 @@ ISR(TIMER1_COMPA_vect){
   int pose2 = readEncoder(serialData2, clk2);
 
   // calculate error
-  int error2 = ref2 - pose2;
+  double error2 = ref2 - encoderRes*pose2;
 
   // calculate integral
   I2 = Ki2 * error2 * Ts * + I2;

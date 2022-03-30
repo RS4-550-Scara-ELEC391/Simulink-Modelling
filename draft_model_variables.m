@@ -4,40 +4,54 @@
 
 % Maxon motor: EC-i 30 30mm (shaft diameter = 4mm)
 
-% variables from data sheet:
+% Maxon motor variables
 V_nom = 12;         % [V]
-R = 0.713;           % [Ohm]
-L = 0.475*1e-3;     % [H]
-km = 22.8*1e-3;     % [Nm/A]
-ka = km;
-Jrot = 13.8*0.0001; % [gm^2]
 B = 7e-4;
 
-% gear ratio
-gear_i = 100;
+% Motor 1 (148866):
+R1 = 0.115;        % [Ohm]
+L1 = 0.245e-3;     % [H]
+km1 = 16.4e-3;     % [Nm/A]
+ka1 = km1;
+
+% Motor 2 (268193):
+R2 = 0.2;           % [Ohm]
+L2 = 0.0345e-3;     % [H]
+km2 = 13.9e-3;      % [Nm/A]
+ka2 = km2;
+
+% robot
+length = 0.275;
+gear1 = 120;
+gear2 = 20;    % --> double check
+
+% Calculated values:
+J1 = 0.5468;            % [Kgm^2]
+J2 = 0.0492;
 
 % Amplifier transfer function
-AmpNum = [2.149e7];
-AmpDen = [1 655.7 5.52e6];
+AmpNum = [1.393e9];
+AmpDen = [1 1.434e4 5.524e8];
+
 s = tf('s');
 
-CF = 1163;
-N = 100;
-
 % Joint 1 PID
-K1 = 0.589;
-Kp1 = 20.9419;
+K1 = 50;
+Kp1 = 0.190;
 Ki1 = 1;
-Kd1 = 109.6356;
+Kd1 = 0.0090;
 
 % Joint 2 PID
-K2 = 0.0753;
-Kp2 = 19.9995;
+K2 = 100;
+Kp2 = 0.1329;
 Ki2 = 1;
-Kd2 = 99.9905;
+Kd2 = 0.0044;
 
+% sampling frequency
+CF = 1163;  % [Hz]
+N = 100;
 
 % Path input
 time = 0:0.001:8;
-X = 200*cos(time)+340;
+X = 200*cos(time)+320;
 Y = 200*sin(time);

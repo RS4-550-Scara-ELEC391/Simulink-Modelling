@@ -21,17 +21,17 @@ ka2 = km2;
 % robot
 length = 0.275;
 gear1 = 120;
-gear2 = 200;    % --> double check
+gear2 = 20;
 
 % Calculated values:
-J1 = 2.60;            % from solidworks with 1kg load
-J2 = 0.50;
+J1 = 0.5468;            % [Kgm^2]
+J2 = 0.0492;
 
 % Amplifier transfer function
         % AmpNum = [2.149e7];
         % AmpDen = [1 655.7 5.52e6];
-AmpNum = [1.822e10];
-AmpDen = [1 1.434e4 1.445e9];
+AmpNum = [1.393e9];
+AmpDen = [1 1.434e4 5.524e8];
 
 s = tf('s');
 
@@ -94,18 +94,18 @@ p = 2*CF;
 Kp1 = 2/z - 1/p;
 Ki1 = 1;
 Kd1 = 1/z^2 - Kp1/p;
-% for n=1:10
-%     PID1 = tf(Kp1 + Ki1/s + Kd1*N*s/(s+N));
-%     [Gm,Pm,Wcg,Wcp] = margin(PID1*G1*H1);
-%     z = Wcg / 10   % Initial zero 1 decade before PXO
-%     p = 2*CF;
-%     Kp1 = 2/z - 1/p;
-%     Ki1 = 1;
-%     Kd1 = 1/z^2 - Kp1/p;
-% end
+for n=1:10
+    PID1 = tf(Kp1 + Ki1/s + Kd1*N*s/(s+N));
+    [Gm,Pm,Wcg,Wcp] = margin(PID1*G1*H1);
+    z = Wcg / 10   % Initial zero 1 decade before PXO
+    p = 2*CF;
+    Kp1 = 2/z - 1/p;
+    Ki1 = 1;
+    Kd1 = 1/z^2 - Kp1/p;
+end
 
-% -> lowest solution z = 8.1446
-z = 8.1446;
+% -> lowest z solution
+z = 11.3;
 Kp1 = 2/z - 1/p;
 Ki1 = 1;
 Kd1 = 1/z^2 - Kp1/p;
@@ -115,20 +115,22 @@ PID1 = tf(Kp1 + Ki1/s + Kd1*N*s/(s+N));
 % Step 5: Choose initial gain
 figure
 rlocus(PID1*G1*H1)
-K1 = 37.2;
+K1 = 50;
 
-[Gm,Pm,Wcg,Wcp] = margin(K1*PID1*G1*H1)
+[Gm,Pm,Wcg,Wcp] = margin(K1*PID1*G1*H1);
 
 
 % Step 6: Nyquist
 figure
+tiledlayout(1,2)
+nexttile;
 nyqlog(PID1*G1*H1), grid on, title('Before Gain')
-figure
+nexttile;
 nyqlog(K1*PID1*G1*H1), grid on, title("After Gain, K1 = " + K1)
 
 % Step 7: step response of new closed loop system
 figure
-step(K1*PID1*G1/(1+K1*PID1*G1*H1)), grid on
+step(K1*PID1*G1/(1+K1*PID1*G1*H1)), grid on, title("Step Response K1 = "+K1)
 
 % Step 8: Heuristic tuning, evaluate margins
 % Step 9: non-linearities, moving target
@@ -163,18 +165,18 @@ p = 2*CF;
 Kp2 = 2/z - 1/p;
 Ki2 = 1;
 Kd2 = 1/z^2 - Kp2/p;
-% for n=1:10
-%     PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
-%     [Gm,Pm,Wcg,Wcp] = margin(PID2*G2*H2);
-%     z = Wcg / 10   % Initial zero 1 decade before PXO
-%     p = 2*CF;
-%     Kp2 = 2/z - 1/p;
-%     Ki2 = 1;
-%     Kd2 = 1/z^2 - Kp1/p;
-% end
+for n=1:10
+    PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
+    [Gm,Pm,Wcg,Wcp] = margin(PID2*G2*H2);
+    z = Wcg / 10   % Initial zero 1 decade before PXO
+    p = 2*CF;
+    Kp2 = 2/z - 1/p;
+    Ki2 = 1;
+    Kd2 = 1/z^2 - Kp2/p;
+end
 
-% -> lowest solution z = 13.697
-z = 13.697;
+% -> lowest z solution
+z = 8.97;
 Kp2 = 2/z - 1/p;
 Ki2 = 1;
 Kd2 = 1/z^2 - Kp2/p;
@@ -183,8 +185,8 @@ PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
 
 % Step 5: Choose initial gain
 figure
-rlocus(PID2*G2*H2)
-K2 = 100;
+rlocus(PID2*G2*H2);
+K2 = 200;
 
 [Gm,Pm,Wcg,Wcp] = margin(K2*PID2*G2*H2);
 
@@ -198,7 +200,7 @@ nyqlog(K2*PID2*G2*H2), grid on, title("After Gain, K2 = " + K2)
 
 % Step 7: step response of new closed loop system
 figure
-step(K2*PID2*G2/(1+K2*PID2*G2*H2), 4), grid on
+step(K2*PID2*G2/(1+K2*PID2*G2*H2), 4), grid on, title("Step Response, K2 = " + K2)
 
 % Step 8: Heuristic tuning, evaluate margins
 % Step 9: non-linearities, moving target

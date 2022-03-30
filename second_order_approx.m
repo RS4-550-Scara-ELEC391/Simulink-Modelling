@@ -9,7 +9,7 @@
 OS = 19.506 - 12.609             % Peak V - steady-state V
 Ts = 0.558e-3          % Time when V = steady-state V * (1.02)
 Tp = 0.051e-3          % Peak time
-Kdc = 12.609
+Kdc = 12.609 / 5
 
 
 % calculate second-order approx
