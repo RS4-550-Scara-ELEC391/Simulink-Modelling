@@ -2,12 +2,13 @@
 %   Generates path with displacement d and 
 %   constant acceleration over total time
 %   inputs:
-%     d = displacement (mm)
-%     time = total time (ms)
-%     dt = time between points (ms)
+%     di = initial position (mm)
+%     df = desired final position (mm)
+%     time = total time (s)
+%     dt = time between points (s)
 % --------------------------------------------
 
-function [disp, vel, accel,t] = trajectories(d, time, dt)
+function [disp, vel, accel,t] = trajectories(di, df, time, dt)
 
 
 % default inputs
@@ -16,7 +17,8 @@ if nargin==1
   dt = 5;
 end
 
-t = linspace(0,time,time/dt); % time in ms
+d = df - di;
+t = linspace(0,time,time/dt); % time in s
 
 
 % d is total distance (mm) |Od-Oi|
@@ -29,6 +31,7 @@ vel = [(2*vmax/time)*t(1:end/2),(-2*vmax/time)*t(1+ end/2:end)+2*vmax];
 
 % integrate vel to find displacement
 disp = cumtrapz(t, vel) ;
+disp = disp + di*ones(size(disp));
 
 % differentiate vel to find acceleration
 dV = gradient(vel);
@@ -40,12 +43,12 @@ tiledlayout(3,1);
 
 nexttile;
 plot(t,disp);
-ylabel('d (mm)')
+ylabel('d (mm)'), grid on
 nexttile;
 plot(t,vel);
-ylabel('v (mm/ms)')
+ylabel('v (mm/s)'), grid on
 nexttile;
 plot(t,accel);
-ylabel('a (mm/ms^{s})')
+ylabel('a (mm/s^{2})'), grid on
 
 end

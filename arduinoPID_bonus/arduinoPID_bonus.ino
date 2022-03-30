@@ -8,22 +8,31 @@ int clk1 = 4;           // clk output to shift reg1
 int clk2 = 5;           // clk output to shift reg2
 int serialData1 = 6;    // encoder 1 data 
 int serialData2 = 7;    // encoder 2 data 
+int potent = 11;        // potentiometer for linear actuator
 int PWM1 = 2;           // PWM output to joint 1
 int PWM2 = 3;           // PWM output to joint 2
+int PWM3 = 13;          // PWM output to joint 2 (linear actuator)
 int reset1 = 8;         // homing pulse 1
-int reset2 = 9;        // homing pulse 2
+int reset2 = 9;         // homing pulse 2
+int valve = 10;          // vacuum valve
 
 // PID constants (Joint 1)
-const double K1 = 1;
-const double Kp1 = K1*1;
+const double K1 = 50;
+const double Kp1 = K1*0.19;
 const double Ki1 = K1*1;
-const double Kd1 = K1*1;
+const double Kd1 = K1*0.009;
 
 // PID constants (Joint 1)
-const double K2 = 1;
-const double Kp2 = K2*1;
+const double K2 = 100;
+const double Kp2 = K2*0.1329;
 const double Ki2 = K2*1;
-const double Kd2 = K2*1;
+const double Kd2 = K2*0.0044;
+
+// PID constants (Linear Actuator)
+const double K3 = 1;
+const double Kp3 = K3*1;
+const double Ki3 = K3*1;
+const double Kd3 = K3*1;
 
 // timing constants
 const int CF = 1163;          // ISR frequency [Hz]
@@ -34,18 +43,25 @@ const double a = N*Ts/(1+N*Ts);   // used for derivative eqn
 // position references
 const double ref1 = -3.14/4;  
 const double ref2 = 3.14/2;
+const double ref3 = 10;
 const double encoderRes = 6.283/1024;
 
 
   // initialize global variables
   double filtered_err_old1 = 0;
   double I1 = 0;
-  
   double filtered_err_old2 = 0;
   double I2 = 0;
+  double filtered_err_old3 = 0;
+  double I3 = 0;
 
   int duty1 = 127;
   int duty2 = 127;
+  int duty3 = 127;
+
+  int pose1;
+  int pose2;
+  int pose3;
 
 
 void setup() {
@@ -57,10 +73,13 @@ void setup() {
   pinMode(clk2, OUTPUT);
   pinMode(serialData1, INPUT);
   pinMode(serialData2, INPUT);
+  pinMode(potent, INPUT);
   pinMode(PWM1, OUTPUT);
   pinMode(PWM2, OUTPUT);
+  pinMode(PWM3, OUTPUT);
   pinMode(reset1, INPUT);
   pinMode(reset2, INPUT);
+  pinMode(valve, OUTPUT);
 
   // Homing Routine:
     // rotate joint 1 back slowly until homing pulse is triggered
@@ -90,7 +109,14 @@ void setup() {
 
 
 void loop() {
-  // loop
+  // open vacuum valve at desired position
+    if(encoderRes*pose1 == 0 && encoderRes*pose2 == 0){
+      digitalWrite(valve, HIGH);
+    }
+  // close vacuum valve at desired position
+    if(encoderRes*pose1 == ref1 && encoderRes*pose2 == ref2){
+      digitalWrite(valve, LOW);
+    }
 }
 
 // interrupt service routine
@@ -100,7 +126,7 @@ ISR(TIMER1_COMPA_vect){
 
 
   // get position from encoder
-  int pose1 = readEncoder(serialData1, clk1);
+  pose1 = readEncoder(serialData1, clk1);
 
   // calculate error
   double error1 = ref1 - encoderRes*pose1;
@@ -126,7 +152,7 @@ ISR(TIMER1_COMPA_vect){
  // ------------ Motor 2 ------------
 
   // get position from encoder
-  int pose2 = readEncoder(serialData2, clk2);
+  pose2 = readEncoder(serialData2, clk2);
 
   // calculate error
   double error2 = ref2 - encoderRes*pose2;
@@ -148,6 +174,33 @@ ISR(TIMER1_COMPA_vect){
   PID2 = constrain(PID2, -5, 5);    
   duty2 = 25.5*PID2 + 127.5;
   analogWrite(PWM2, duty2);
+
+
+   // ------------ Motor 3 (linear actuator) ------------
+
+  // get position from encoder
+  pose3 = analogRead(potent);  // -> conversion
+
+  // calculate error
+  double error3 = ref3 - pose3;
+
+  // calculate integral
+  I3 = Ki3 * error3 * Ts * + I3;
+
+  // calculate derivative with filtered input (Ns / s+N)
+  double filtered_err3 = (1-a)*filtered_err_old2 + a*error2;
+  double D3 = (a/Ts)*(error3 - filtered_err_old2);
+
+  filtered_err_old3 = filtered_err3;
+
+  // PID value = Kp*error + Ki*integral + Kd*rate
+  int PID3 = (Kp3 * error3) + (Ki3 * I3) + (Kd3 * D3);
+
+
+  // set PWM duty: mapping (-5 to 5V) -> (0 to 255)
+  PID3 = constrain(PID3, -5, 5);    
+  duty3 = 25.5*PID3 + 127.5;
+  analogWrite(PWM3, duty3);
 
   
 }// end ISR
