@@ -121,12 +121,12 @@ K1 = 50;
 
 
 % Step 6: Nyquist
-figure
-tiledlayout(1,2)
-nexttile;
-nyqlog(PID1*G1*H1), grid on, title('Before Gain')
-nexttile;
-nyqlog(K1*PID1*G1*H1), grid on, title("After Gain, K1 = " + K1)
+% figure
+% tiledlayout(1,2)
+% nexttile;
+% nyqlog(PID1*G1*H1), grid on, title('Before Gain')
+% nexttile;
+% nyqlog(K1*PID1*G1*H1), grid on, title("After Gain, K1 = " + K1)
 
 % Step 7: step response of new closed loop system
 figure
@@ -186,17 +186,17 @@ PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
 % Step 5: Choose initial gain
 figure
 rlocus(PID2*G2*H2);
-K2 = 200;
+K2 = 100;
 
 [Gm,Pm,Wcg,Wcp] = margin(K2*PID2*G2*H2);
 
 % Step 6: Nyquist
-figure
-tiledlayout(1,2)
-nexttile;
-nyqlog(PID2*G2*H2), grid on, title('Before Gain')
-nexttile;
-nyqlog(K2*PID2*G2*H2), grid on, title("After Gain, K2 = " + K2)
+% figure
+% tiledlayout(1,2)
+% nexttile;
+% nyqlog(PID2*G2*H2), grid on, title('Before Gain')
+% nexttile;
+% nyqlog(K2*PID2*G2*H2), grid on, title("After Gain, K2 = " + K2)
 
 % Step 7: step response of new closed loop system
 figure

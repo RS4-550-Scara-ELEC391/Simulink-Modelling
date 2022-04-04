@@ -8,13 +8,13 @@ int clk1 = 4;           // clk output to shift reg1
 int clk2 = 5;           // clk output to shift reg2
 int serialData1 = 6;    // encoder 1 data 
 int serialData2 = 7;    // encoder 2 data 
-int potent = 11;        // potentiometer for linear actuator
-int PWM1 = 2;           // PWM output to joint 1
-int PWM2 = 3;           // PWM output to joint 2
-int PWM3 = 13;          // PWM output to joint 2 (linear actuator)
+int potent = 14;        // (A0) potentiometer for linear actuator
+int PWM1 = 9;           // PWM output to joint 1
+int PWM2 = 10;           // PWM output to joint 2
+int PWM3 = 11;          // PWM output to joint 2 (linear actuator)
 int reset1 = 8;         // homing pulse 1
-int reset2 = 9;         // homing pulse 2
-int valve = 10;          // vacuum valve
+int reset2 = 12;         // homing pulse 2
+int valve = 13;          // vacuum valve
 
 // PID constants (Joint 1)
 const double K1 = 50;
@@ -179,7 +179,7 @@ ISR(TIMER1_COMPA_vect){
    // ------------ Motor 3 (linear actuator) ------------
 
   // get position from encoder
-  pose3 = analogRead(potent);  // -> conversion
+  pose3 = analogRead(potent)/5;  // -> conversion (0 to 1023 for 0 to 203.2mm)
 
   // calculate error
   double error3 = ref3 - pose3;
