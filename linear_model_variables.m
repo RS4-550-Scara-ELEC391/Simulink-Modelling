@@ -20,7 +20,7 @@ ka2 = km2;
 
 % robot
 length = 0.275;
-gear1 = 120;
+gear1 = 150;
 gear2 = 20;
 
 % Calculated values:
@@ -105,7 +105,7 @@ for n=1:10
 end
 
 % -> lowest z solution
-z = 11.3;
+z = 13.0;
 Kp1 = 2/z - 1/p;
 Ki1 = 1;
 Kd1 = 1/z^2 - Kp1/p;
@@ -186,7 +186,7 @@ PID2 = tf(Kp2 + Ki2/s + Kd2*N*s/(s+N));
 % Step 5: Choose initial gain
 figure
 rlocus(PID2*G2*H2);
-K2 = 100;
+K2 = 30;
 
 [Gm,Pm,Wcg,Wcp] = margin(K2*PID2*G2*H2);
 
